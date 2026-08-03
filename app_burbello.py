@@ -75,6 +75,24 @@ with aba_cnpj:
             if resultados:
                 st.success(f"{len(resultados)} CNPJs consultados!")
                 st.dataframe(resultados, use_container_width=True)
+
+                saida_cnpj = io.StringIO()
+                writer_cnpj = csv.DictWriter(
+                    saida_cnpj,
+                    fieldnames=["CNPJ", "Razão Social"],
+                    delimiter=";",
+                    extrasaction="ignore",
+                )
+                writer_cnpj.writeheader()
+                writer_cnpj.writerows(resultados)
+
+                st.download_button(
+                    label="⬇️ Baixar CSV",
+                    data=saida_cnpj.getvalue().encode("utf-8-sig"),
+                    file_name="consulta_cnpj.csv",
+                    mime="text/csv",
+                    key="btn_download_cnpj",
+                )
             else:
                 st.warning("Nenhum CNPJ válido encontrado.")
 
